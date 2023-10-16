@@ -1,20 +1,20 @@
 package com.example.onlinebookstore.repository;
 
+import com.example.onlinebookstore.exceptions.DataProcessingException;
 import com.example.onlinebookstore.model.Book;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.TypedQuery;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.HibernateException;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class BookRepositoryImpl extends AbstractRepository implements BookRepository {
+@RequiredArgsConstructor
+public class BookRepositoryImpl implements BookRepository {
 
-    protected BookRepositoryImpl(EntityManagerFactory entityManagerFactory) {
-        super(entityManagerFactory);
-    }
+    private final EntityManagerFactory manager;
 
     @Override
     public Book save(Book book) {
@@ -29,7 +29,7 @@ public class BookRepositoryImpl extends AbstractRepository implements BookReposi
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new RuntimeException("Can't save this book: " + book);
+            throw new DataProcessingException("Can't save this book: " + book);
         } finally {
             entityManager.close();
         }
@@ -39,10 +39,9 @@ public class BookRepositoryImpl extends AbstractRepository implements BookReposi
     @Override
     public List<Book> findAll() {
         try (EntityManager entityManager = manager.createEntityManager()) {
-            TypedQuery<Book> query = entityManager.createQuery("FROM Book ", Book.class);
-            return query.getResultList();
+            return entityManager.createQuery("FROM Book ", Book.class).getResultList();
         } catch (HibernateException e) {
-            throw new RuntimeException("Can't save this book: ");
+            throw new DataProcessingException("Can't get all books from db ");
         }
     }
 }
