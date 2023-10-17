@@ -1,26 +1,23 @@
 package com.example.onlinebookstore.service;
 
 import com.example.onlinebookstore.dto.BookDto;
-import com.example.onlinebookstore.dto.BookRequestDto;
+import com.example.onlinebookstore.dto.CreateBookRequestDto;
 import com.example.onlinebookstore.exceptions.EntityNotFoundException;
 import com.example.onlinebookstore.mapper.BookMapper;
 import com.example.onlinebookstore.repository.BookRepository;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
 
-    public BookServiceImpl(BookRepository bookRepository, BookMapper bookMapper) {
-        this.bookRepository = bookRepository;
-        this.bookMapper = bookMapper;
-    }
-
     @Override
-    public BookDto save(BookRequestDto bookRequestDto) {
-        return bookMapper.toDto(bookRepository.save(bookMapper.toModel(bookRequestDto)));
+    public BookDto save(CreateBookRequestDto createBookRequestDto) {
+        return bookMapper.toDto(bookRepository.save(bookMapper.toModel(createBookRequestDto)));
     }
 
     @Override
@@ -32,8 +29,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto getById(Long id) {
-        return bookMapper.toDto(bookRepository.findById(id)
+        return bookRepository.findById(id)
+                .map(bookMapper::toDto)
                 .orElseThrow(() ->
-                        new EntityNotFoundException("Can't find book by this id: " + id)));
+                        new EntityNotFoundException("Can't find book by this id: " + id));
     }
 }
