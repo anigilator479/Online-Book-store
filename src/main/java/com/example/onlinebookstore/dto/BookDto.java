@@ -8,7 +8,6 @@ public record BookDto(
         String author,
         String isbn,
         BigDecimal price,
-        boolean isDeleted,
         String description,
         String coverImage) {
 }
