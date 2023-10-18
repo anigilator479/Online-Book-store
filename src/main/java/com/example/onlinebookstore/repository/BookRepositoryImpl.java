@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.HibernateException;
 import org.springframework.stereotype.Repository;
@@ -42,6 +43,17 @@ public class BookRepositoryImpl implements BookRepository {
             return entityManager.createQuery("FROM Book ", Book.class).getResultList();
         } catch (HibernateException e) {
             throw new DataProcessingException("Can't get all books from db ");
+        }
+    }
+
+    @Override
+    public Optional<Book> findById(Long id) {
+        try (EntityManager entityManager = manager.createEntityManager()) {
+            Book singleResult = entityManager.createQuery("FROM Book WHERE id=:id", Book.class)
+                    .setParameter("id", id).getSingleResult();
+            return Optional.ofNullable(singleResult);
+        } catch (HibernateException e) {
+            throw new DataProcessingException("Can't get book by this id ");
         }
     }
 }
