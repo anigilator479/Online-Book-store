@@ -3,7 +3,12 @@ package com.example.onlinebookstore.mapper;
 import com.example.onlinebookstore.dto.BookDto;
 import com.example.onlinebookstore.dto.CreateBookRequestDto;
 import com.example.onlinebookstore.model.Book;
-import org.mapstruct.*;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(
         componentModel = "spring",
