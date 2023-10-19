@@ -5,9 +5,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 public record CreateBookRequestDto(
-        @PositiveOrZero
-        @NotNull
-        Long id,
         @NotNull
         String title,
         @NotNull
