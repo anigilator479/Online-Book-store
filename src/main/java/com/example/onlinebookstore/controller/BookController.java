@@ -21,14 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class BookController {
     private final BookService bookService;
-
-    @ResponseStatus(HttpStatus.OK)
+    
     @GetMapping
     public List<BookDto> getAll() {
         return bookService.findAll();
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public BookDto getById(@PathVariable Long id) {
         return bookService.getById(id);
@@ -40,13 +38,12 @@ public class BookController {
         bookService.deleteById(id);
     }
 
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public BookDto createBook(@RequestBody CreateBookRequestDto requestDto) {
         return bookService.save(requestDto);
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public BookDto updateBook(@RequestBody CreateBookRequestDto requestDto, @PathVariable Long id) {
         return bookService.updateById(requestDto, id);
