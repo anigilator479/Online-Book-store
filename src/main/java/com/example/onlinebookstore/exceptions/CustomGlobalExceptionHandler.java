@@ -38,7 +38,7 @@ public class CustomGlobalExceptionHandler {
         if (objectError instanceof FieldError) {
             String field = ((FieldError) objectError).getField();
             String message = objectError.getDefaultMessage();
-            return field + " " + message;
+            return String.join(" ", field, message);
         }
         return objectError.getDefaultMessage();
     }

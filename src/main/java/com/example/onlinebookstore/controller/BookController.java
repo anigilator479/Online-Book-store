@@ -6,10 +6,12 @@ import com.example.onlinebookstore.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/books")
 @RequiredArgsConstructor
+@Validated
 public class BookController {
     private final BookService bookService;
 
@@ -35,14 +38,14 @@ public class BookController {
 
     @Operation(summary = "Get book by id", description = "Get a book by id")
     @GetMapping("/{id}")
-    public BookDto getById(@PathVariable Long id) {
+    public BookDto getById(@PathVariable @PositiveOrZero Long id) {
         return bookService.getById(id);
     }
 
     @Operation(summary = "Delete book by id", description = "Deletes a book by id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable @PositiveOrZero Long id) {
         bookService.deleteById(id);
     }
 
@@ -57,7 +60,7 @@ public class BookController {
             description = "Updates data about book in the db by id")
     @PutMapping("/{id}")
     public BookDto updateBook(@RequestBody @Valid CreateBookRequestDto requestDto,
-                              @PathVariable Long id) {
+                              @PathVariable @PositiveOrZero Long id) {
         return bookService.updateById(requestDto, id);
     }
 }
