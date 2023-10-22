@@ -16,7 +16,7 @@ public class CustomGlobalExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
         return createResponseEntity(
-                new BookErrorDto(HttpStatus.NOT_FOUND,LocalDateTime.now(), ex.getMessage()));
+                new BookErrorDto(LocalDateTime.now(), ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -25,13 +25,13 @@ public class CustomGlobalExceptionHandler {
         List<String> errors = ex.getBindingResult().getAllErrors().stream()
                 .map(this::getErrorMessage)
                 .toList();
-        BookErrorDto bookErrorDto = new BookErrorDto(HttpStatus.BAD_REQUEST,
+        BookErrorDto bookErrorDto = new BookErrorDto(
                 LocalDateTime.now(), errors);
         return createResponseEntity(bookErrorDto);
     }
 
     private ResponseEntity<Object> createResponseEntity(BookErrorDto bookErrorDto) {
-        return new ResponseEntity<>(bookErrorDto, bookErrorDto.status());
+        return new ResponseEntity<>(bookErrorDto, HttpStatus.BAD_REQUEST);
     }
 
     private String getErrorMessage(ObjectError objectError) {

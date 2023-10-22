@@ -6,10 +6,11 @@ import com.example.onlinebookstore.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,20 +33,20 @@ public class BookController {
 
     @Operation(summary = "Get all books", description = "Get a list of all books")
     @GetMapping
-    public List<BookDto> getAll(Pageable pageable) {
+    public List<BookDto> getAll(@PageableDefault(size = 5, sort = "title") Pageable pageable) {
         return bookService.findAll(pageable);
     }
 
     @Operation(summary = "Get book by id", description = "Get a book by id")
     @GetMapping("/{id}")
-    public BookDto getById(@PathVariable @PositiveOrZero Long id) {
+    public BookDto getById(@PathVariable @Positive Long id) {
         return bookService.getById(id);
     }
 
     @Operation(summary = "Delete book by id", description = "Deletes a book by id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable @PositiveOrZero Long id) {
+    public void delete(@PathVariable @Positive Long id) {
         bookService.deleteById(id);
     }
 
@@ -60,7 +61,7 @@ public class BookController {
             description = "Updates data about book in the db by id")
     @PutMapping("/{id}")
     public BookDto updateBook(@RequestBody @Valid CreateBookRequestDto requestDto,
-                              @PathVariable @PositiveOrZero Long id) {
+                              @PathVariable @Positive Long id) {
         return bookService.updateById(requestDto, id);
     }
 }
