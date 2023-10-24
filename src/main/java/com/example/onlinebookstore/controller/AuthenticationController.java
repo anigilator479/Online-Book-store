@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/auth/")
 @Validated
 public class AuthenticationController {
-    private final UserService userService;
+private final UserService userService;
 
     @PostMapping("/login")
     public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto request) {
@@ -29,6 +29,6 @@ public class AuthenticationController {
     @PostMapping("/register")
     public UserResponseDto register(@RequestBody @Valid UserRegistrationRequestDto request)
             throws RegistrationException {
-        return null;
+        return userService.register(request);
     }
 }
