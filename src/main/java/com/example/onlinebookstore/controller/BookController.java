@@ -38,6 +38,7 @@ public class BookController {
     public List<BookDto> getAll(@PageableDefault(size = 5, sort = "title") Pageable pageable) {
         return bookService.findAll(pageable);
     }
+
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Get book by id", description = "Get a book by id")
     @GetMapping("/{id}")
