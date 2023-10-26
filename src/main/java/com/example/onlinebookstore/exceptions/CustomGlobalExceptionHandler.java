@@ -3,6 +3,7 @@ package com.example.onlinebookstore.exceptions;
 import com.example.onlinebookstore.errors.ErrorDto;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.naming.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -13,6 +14,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class CustomGlobalExceptionHandler {
+    @ExceptionHandler(AuthenticationException.class)
+    protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
+        return createResponseEntity(
+                new ErrorDto(LocalDateTime.now(), ex.getMessage()));
+    }
+
     @ExceptionHandler(RegistrationException.class)
     protected ResponseEntity<Object> handleRegistrationException(RegistrationException ex) {
         return createResponseEntity(
