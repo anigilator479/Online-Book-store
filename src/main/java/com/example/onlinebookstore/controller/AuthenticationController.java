@@ -1,10 +1,11 @@
 package com.example.onlinebookstore.controller;
 
-import com.example.onlinebookstore.dto.UserLoginRequestDto;
-import com.example.onlinebookstore.dto.UserLoginResponseDto;
-import com.example.onlinebookstore.dto.UserRegistrationRequestDto;
-import com.example.onlinebookstore.dto.UserResponseDto;
+import com.example.onlinebookstore.dto.user.UserLoginRequestDto;
+import com.example.onlinebookstore.dto.user.UserLoginResponseDto;
+import com.example.onlinebookstore.dto.user.UserRegistrationRequestDto;
+import com.example.onlinebookstore.dto.user.UserResponseDto;
 import com.example.onlinebookstore.exceptions.RegistrationException;
+import com.example.onlinebookstore.security.AuthenticationService;
 import com.example.onlinebookstore.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class AuthenticationController {
     private final UserService userService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
     public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto request) {
-        return null;
+        return authenticationService.authenticate(request);
     }
 
     @PostMapping("/register")

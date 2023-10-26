@@ -5,13 +5,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
@@ -22,30 +23,40 @@ public class User implements UserDetails {
     @Getter
     @Setter
     private Long id;
+
     @Getter
     @Setter
     @Column(nullable = false, unique = true)
     private String email;
+
     @Getter
     @Setter
     @Column(nullable = false)
     private String password;
+
     @Getter
     @Setter
     @Column(nullable = false)
     private String firstName;
+
     @Getter
     @Setter
     @Column(nullable = false)
     private String lastName;
+
     @Getter
     @Setter
     @Column(nullable = false)
     private String shippingAddress;
 
+    @Getter
+    @Setter
+    @ManyToMany
+    private Set<Role> roles = new HashSet<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return roles;
     }
 
     @Override
@@ -72,4 +83,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

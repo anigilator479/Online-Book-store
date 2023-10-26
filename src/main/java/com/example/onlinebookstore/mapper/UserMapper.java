@@ -1,7 +1,7 @@
 package com.example.onlinebookstore.mapper;
 
-import com.example.onlinebookstore.dto.UserDto;
-import com.example.onlinebookstore.dto.UserResponseDto;
+import com.example.onlinebookstore.dto.user.UserRegistrationRequestDto;
+import com.example.onlinebookstore.dto.user.UserResponseDto;
 import com.example.onlinebookstore.model.User;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -15,6 +15,6 @@ import org.mapstruct.NullValueCheckStrategy;
 public interface UserMapper {
     UserResponseDto toUserResponse(User user);
 
-    UserDto toUserDto(User user);
+    User toUserDto(UserRegistrationRequestDto registrationRequestDto);
 
 }
