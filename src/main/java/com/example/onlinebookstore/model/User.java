@@ -15,41 +15,35 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Getter
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
     @Setter
     private Long id;
 
-    @Getter
     @Setter
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Getter
     @Setter
     @Column(nullable = false)
     private String password;
 
-    @Getter
     @Setter
     @Column(nullable = false)
     private String firstName;
 
-    @Getter
     @Setter
     @Column(nullable = false)
     private String lastName;
 
-    @Getter
     @Setter
     @Column(nullable = false)
     private String shippingAddress;
 
-    @Getter
     @Setter
     @ManyToMany
     private Set<Role> roles = new HashSet<>();
