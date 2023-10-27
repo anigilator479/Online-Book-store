@@ -14,22 +14,29 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class CustomGlobalExceptionHandler {
+    @ExceptionHandler(TokenAuthenticationException.class)
+    protected ResponseEntity<Object> handleTokenAuthenticationException(
+            TokenAuthenticationException ex) {
+        return createResponseEntity(
+                new ErrorDto(LocalDateTime.now(), ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
         return createResponseEntity(
-                new ErrorDto(LocalDateTime.now(), ex.getMessage()));
+                new ErrorDto(LocalDateTime.now(), ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RegistrationException.class)
     protected ResponseEntity<Object> handleRegistrationException(RegistrationException ex) {
         return createResponseEntity(
-                new ErrorDto(LocalDateTime.now(), ex.getMessage()));
+                new ErrorDto(LocalDateTime.now(), ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
         return createResponseEntity(
-                new ErrorDto(LocalDateTime.now(), ex.getMessage()));
+                new ErrorDto(LocalDateTime.now(), ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -40,11 +47,11 @@ public class CustomGlobalExceptionHandler {
                 .toList();
         ErrorDto errorDto = new ErrorDto(
                 LocalDateTime.now(), errors);
-        return createResponseEntity(errorDto);
+        return createResponseEntity(errorDto, HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<Object> createResponseEntity(ErrorDto errorDto) {
-        return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+    private ResponseEntity<Object> createResponseEntity(ErrorDto errorDto, HttpStatus status) {
+        return new ResponseEntity<>(errorDto, status);
     }
 
     private String getErrorMessage(ObjectError objectError) {

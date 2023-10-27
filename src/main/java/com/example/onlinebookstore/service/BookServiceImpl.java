@@ -19,20 +19,20 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto save(CreateBookRequestDto createBookRequestDto) {
-        return bookMapper.toBookDto(bookRepository.save(bookMapper.toBook(createBookRequestDto)));
+        return bookMapper.toDto(bookRepository.save(bookMapper.toBook(createBookRequestDto)));
     }
 
     @Override
     public List<BookDto> findAll(Pageable pageable) {
         return bookRepository.findAll(pageable).stream()
-                .map(bookMapper::toBookDto)
+                .map(bookMapper::toDto)
                 .toList();
     }
 
     @Override
     public BookDto getById(Long id) {
         return bookRepository.findById(id)
-                .map(bookMapper::toBookDto)
+                .map(bookMapper::toDto)
                 .orElseThrow(() ->
                         new EntityNotFoundException("Can't find book by this id: " + id));
     }
@@ -42,7 +42,7 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Can't update book by this id: " + id));
         bookMapper.updateBook(createBookRequestDto, book);
-        return bookMapper.toBookDto(bookRepository.save(book));
+        return bookMapper.toDto(bookRepository.save(book));
     }
 
     @Override

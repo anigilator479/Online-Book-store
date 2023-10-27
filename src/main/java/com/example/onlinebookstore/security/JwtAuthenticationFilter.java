@@ -1,25 +1,25 @@
 package com.example.onlinebookstore.security;
 
+import com.example.onlinebookstore.exceptions.TokenAuthenticationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final int INDEX_OF_TOKEN_START = 7;
     private static final String TYPE_OF_TOKEN = "Bearer ";
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
@@ -29,7 +29,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        String token = getToken(request);
+        String token = null;
+        if (request.getHeader(HttpHeaders.AUTHORIZATION) != null) {
+            token = getToken(request);
+        }
 
         if (token != null && jwtUtil.isValidToken(token)) {
             String username = jwtUtil.getUsername(token);
@@ -43,10 +46,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String getToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TYPE_OF_TOKEN)) {
-            return bearerToken.substring(INDEX_OF_TOKEN_START);
-        }
-        return null;
+        return Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION))
+                    .filter(header -> header.length() > TYPE_OF_TOKEN.length())
+                    .filter(header -> header
+                            .substring(0, TYPE_OF_TOKEN.length()).equalsIgnoreCase(TYPE_OF_TOKEN))
+                    .map(header -> header.substring(TYPE_OF_TOKEN.length()))
+                    .orElseThrow(() -> new TokenAuthenticationException("Invalid token type"));
     }
 }

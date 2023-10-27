@@ -4,7 +4,6 @@ import com.example.onlinebookstore.dto.user.UserLoginRequestDto;
 import com.example.onlinebookstore.dto.user.UserLoginResponseDto;
 import com.example.onlinebookstore.dto.user.UserRegistrationRequestDto;
 import com.example.onlinebookstore.dto.user.UserResponseDto;
-import com.example.onlinebookstore.exceptions.RegistrationException;
 import com.example.onlinebookstore.security.AuthenticationService;
 import com.example.onlinebookstore.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,8 +33,7 @@ public class AuthenticationController {
 
     @Operation(summary = "Register", description = "Users can create new account")
     @PostMapping("/register")
-    public UserResponseDto register(@RequestBody @Valid UserRegistrationRequestDto request)
-            throws RegistrationException {
+    public UserResponseDto register(@RequestBody @Valid UserRegistrationRequestDto request) {
         return userService.register(request);
     }
 }

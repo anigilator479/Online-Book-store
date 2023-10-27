@@ -16,35 +16,29 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter
     private Long id;
 
-    @Setter
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Setter
     @Column(nullable = false)
     private String password;
 
-    @Setter
     @Column(nullable = false)
     private String firstName;
 
-    @Setter
     @Column(nullable = false)
     private String lastName;
 
-    @Setter
     @Column(nullable = false)
     private String shippingAddress;
 
-    @Setter
     @ManyToMany
     private Set<Role> roles = new HashSet<>();
 

@@ -16,7 +16,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
         implementationPackage = "<PACKAGE_NAME>.impl")
 public interface BookMapper {
-    BookDto toBookDto(Book book);
+    BookDto toDto(Book book);
 
     Book toBook(CreateBookRequestDto createBookRequestDto);
 
