@@ -13,7 +13,7 @@ import org.mapstruct.NullValueCheckStrategy;
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
         implementationPackage = "<PACKAGE_NAME>.impl")
 public interface UserMapper {
-    UserResponseDto toResponse(User user);
+    UserResponseDto toUserResponse(User user);
 
     User toUser(UserRegistrationRequestDto registrationRequestDto);
 
