@@ -1,6 +1,7 @@
 package com.example.onlinebookstore.mapper;
 
-import com.example.onlinebookstore.dto.category.CategoryDto;
+import com.example.onlinebookstore.dto.category.CategoryRequestDto;
+import com.example.onlinebookstore.dto.category.CategoryResponseDto;
 import com.example.onlinebookstore.model.Category;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
@@ -15,10 +16,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
         implementationPackage = "<PACKAGE_NAME>.impl")
 public interface CategoryMapper {
-    CategoryDto toDto(Category category);
+    CategoryResponseDto toResponseDto(Category category);
 
-    Category toCategory(CategoryDto categoryDto);
+    Category toCategory(CategoryRequestDto categoryRequestDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateCategory(CategoryDto requestDto, @MappingTarget Category category);
+    void updateCategory(CategoryRequestDto requestDto, @MappingTarget Category category);
 }

@@ -1,6 +1,7 @@
 package com.example.onlinebookstore.service.impl;
 
-import com.example.onlinebookstore.dto.category.CategoryDto;
+import com.example.onlinebookstore.dto.category.CategoryRequestDto;
+import com.example.onlinebookstore.dto.category.CategoryResponseDto;
 import com.example.onlinebookstore.exceptions.EntityNotFoundException;
 import com.example.onlinebookstore.mapper.CategoryMapper;
 import com.example.onlinebookstore.model.Category;
@@ -18,32 +19,32 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
 
     @Override
-    public List<CategoryDto> findAll(Pageable pageable) {
+    public List<CategoryResponseDto> findAll(Pageable pageable) {
         return categoryRepository.findAll(pageable)
-                .map(categoryMapper::toDto)
+                .map(categoryMapper::toResponseDto)
                 .stream()
                 .toList();
     }
 
     @Override
-    public CategoryDto getById(Long id) {
-        return categoryMapper.toDto(categoryRepository.findById(id)
+    public CategoryResponseDto getById(Long id) {
+        return categoryMapper.toResponseDto(categoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find Category by this id: " + id)));
     }
 
     @Override
-    public CategoryDto save(CategoryDto categoryDto) {
-        return categoryMapper.toDto(categoryRepository
-                .save(categoryMapper.toCategory(categoryDto)));
+    public CategoryResponseDto save(CategoryRequestDto categoryRequestDto) {
+        return categoryMapper.toResponseDto(categoryRepository
+                .save(categoryMapper.toCategory(categoryRequestDto)));
     }
 
     @Override
-    public CategoryDto updateById(Long id, CategoryDto categoryDto) {
+    public CategoryResponseDto updateById(Long id, CategoryRequestDto categoryRequestDto) {
         Category category = categoryRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Can't update book by this id: " + id));
-        categoryMapper.updateCategory(categoryDto, category);
-        return categoryMapper.toDto(categoryRepository.save(category));
+        categoryMapper.updateCategory(categoryRequestDto, category);
+        return categoryMapper.toResponseDto(categoryRepository.save(category));
     }
 
     @Override

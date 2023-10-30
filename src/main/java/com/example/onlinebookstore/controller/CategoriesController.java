@@ -1,7 +1,8 @@
 package com.example.onlinebookstore.controller;
 
 import com.example.onlinebookstore.dto.book.BookDtoWithoutCategoryIds;
-import com.example.onlinebookstore.dto.category.CategoryDto;
+import com.example.onlinebookstore.dto.category.CategoryRequestDto;
+import com.example.onlinebookstore.dto.category.CategoryResponseDto;
 import com.example.onlinebookstore.service.BookService;
 import com.example.onlinebookstore.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,14 +38,15 @@ public class CategoriesController {
     @PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get all categories", description = "Get a list of all categories")
     @GetMapping
-    public List<CategoryDto> getAll(@PageableDefault(size = 5, sort = "name") Pageable pageable) {
+    public List<CategoryResponseDto> getAll(
+            @PageableDefault(size = 5, sort = "name") Pageable pageable) {
         return categoryService.findAll(pageable);
     }
 
     @PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get a category by id", description = "Get a specific category by id")
     @GetMapping("/{id}")
-    public CategoryDto getCategoryById(@PathVariable Long id) {
+    public CategoryResponseDto getCategoryById(@PathVariable Long id) {
         return categoryService.getById(id);
     }
 
@@ -68,16 +70,17 @@ public class CategoriesController {
     @Operation(summary = "Create category", description = "Creates a new category in db")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public CategoryDto createCategory(@RequestBody @Valid CategoryDto categoryDto) {
-        return categoryService.save(categoryDto);
+    public CategoryResponseDto createCategory(
+            @RequestBody @Valid CategoryRequestDto categoryRequestDto) {
+        return categoryService.save(categoryRequestDto);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Update category info by id",
             description = "Updates data about category in the db by id")
     @PutMapping("/{id}")
-    public CategoryDto updateBook(@RequestBody @Valid CategoryDto requestDto,
-                              @PathVariable @Positive Long id) {
+    public CategoryResponseDto updateBook(@RequestBody @Valid CategoryRequestDto requestDto,
+                                              @PathVariable @Positive Long id) {
         return categoryService.updateById(id, requestDto);
     }
 }
