@@ -35,7 +35,6 @@ public class CategoriesController {
     private final BookService bookService;
     private final CategoryService categoryService;
 
-    @PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get all categories", description = "Get a list of all categories")
     @GetMapping
     public List<CategoryResponseDto> getAll(
@@ -43,14 +42,12 @@ public class CategoriesController {
         return categoryService.findAll(pageable);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get a category by id", description = "Get a specific category by id")
     @GetMapping("/{id}")
     public CategoryResponseDto getCategoryById(@PathVariable Long id) {
         return categoryService.getById(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get a books list by category id",
             description = "Get a specific books list by category id")
     @GetMapping("/{id}/books")
