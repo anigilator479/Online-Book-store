@@ -1,5 +1,7 @@
 package com.example.onlinebookstore.config;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 import com.example.onlinebookstore.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +36,10 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        auth -> auth.requestMatchers("/api/auth/**")
+                        auth -> auth.requestMatchers(
+                                        antMatcher("/api/auth/**"),
+                                        antMatcher("/error")
+                                )
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
