@@ -1,8 +1,9 @@
 package com.example.onlinebookstore.exceptions;
 
-import com.example.onlinebookstore.errors.BookErrorDto;
+import com.example.onlinebookstore.errors.ErrorDto;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.naming.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -13,10 +14,29 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class CustomGlobalExceptionHandler {
+    @ExceptionHandler(TokenAuthenticationException.class)
+    protected ResponseEntity<Object> handleTokenAuthenticationException(
+            TokenAuthenticationException ex) {
+        return createResponseEntity(
+                new ErrorDto(LocalDateTime.now(), ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
+        return createResponseEntity(
+                new ErrorDto(LocalDateTime.now(), ex.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(RegistrationException.class)
+    protected ResponseEntity<Object> handleRegistrationException(RegistrationException ex) {
+        return createResponseEntity(
+                new ErrorDto(LocalDateTime.now(), ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
         return createResponseEntity(
-                new BookErrorDto(LocalDateTime.now(), ex.getMessage()));
+                new ErrorDto(LocalDateTime.now(), ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -25,13 +45,13 @@ public class CustomGlobalExceptionHandler {
         List<String> errors = ex.getBindingResult().getAllErrors().stream()
                 .map(this::getErrorMessage)
                 .toList();
-        BookErrorDto bookErrorDto = new BookErrorDto(
+        ErrorDto errorDto = new ErrorDto(
                 LocalDateTime.now(), errors);
-        return createResponseEntity(bookErrorDto);
+        return createResponseEntity(errorDto, HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<Object> createResponseEntity(BookErrorDto bookErrorDto) {
-        return new ResponseEntity<>(bookErrorDto, HttpStatus.BAD_REQUEST);
+    private ResponseEntity<Object> createResponseEntity(ErrorDto errorDto, HttpStatus status) {
+        return new ResponseEntity<>(errorDto, status);
     }
 
     private String getErrorMessage(ObjectError objectError) {
