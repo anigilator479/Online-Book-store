@@ -1,4 +1,4 @@
-package com.example.onlinebookstore.service;
+package com.example.onlinebookstore.service.impl;
 
 import com.example.onlinebookstore.dto.user.UserRegistrationRequestDto;
 import com.example.onlinebookstore.dto.user.UserResponseDto;
@@ -8,6 +8,7 @@ import com.example.onlinebookstore.model.Role;
 import com.example.onlinebookstore.model.User;
 import com.example.onlinebookstore.repository.RoleRepository;
 import com.example.onlinebookstore.repository.UserRepository;
+import com.example.onlinebookstore.service.UserService;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
