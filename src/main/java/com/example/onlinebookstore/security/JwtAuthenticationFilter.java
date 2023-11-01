@@ -1,6 +1,5 @@
 package com.example.onlinebookstore.security;
 
-import com.example.onlinebookstore.exceptions.TokenAuthenticationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,10 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        String token = null;
-        if (request.getHeader(HttpHeaders.AUTHORIZATION) != null) {
-            token = getToken(request);
-        }
+        String token = getToken(request);
 
         if (token != null && jwtUtil.isValidToken(token)) {
             String username = jwtUtil.getUsername(token);
@@ -51,6 +47,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .filter(header -> header
                             .substring(0, TYPE_OF_TOKEN.length()).equalsIgnoreCase(TYPE_OF_TOKEN))
                     .map(header -> header.substring(TYPE_OF_TOKEN.length()))
-                    .orElseThrow(() -> new TokenAuthenticationException("Invalid token type"));
+                    .orElse(null);
     }
 }

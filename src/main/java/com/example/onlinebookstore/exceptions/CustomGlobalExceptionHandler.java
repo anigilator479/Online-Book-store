@@ -14,13 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class CustomGlobalExceptionHandler {
-    @ExceptionHandler(TokenAuthenticationException.class)
-    protected ResponseEntity<Object> handleTokenAuthenticationException(
-            TokenAuthenticationException ex) {
-        return createResponseEntity(
-                new ErrorDto(LocalDateTime.now(), ex.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(AuthenticationException.class)
     protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
         return createResponseEntity(
@@ -30,7 +23,7 @@ public class CustomGlobalExceptionHandler {
     @ExceptionHandler(RegistrationException.class)
     protected ResponseEntity<Object> handleRegistrationException(RegistrationException ex) {
         return createResponseEntity(
-                new ErrorDto(LocalDateTime.now(), ex.getMessage()), HttpStatus.BAD_REQUEST);
+                new ErrorDto(LocalDateTime.now(), ex.getMessage()), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

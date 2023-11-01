@@ -55,7 +55,7 @@ public class CategoriesController {
         return bookService.findAllByCategoriesId(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete category by id", description = "Deletes a category by id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
@@ -63,7 +63,7 @@ public class CategoriesController {
         categoryService.deleteById(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create category", description = "Creates a new category in db")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
@@ -72,7 +72,7 @@ public class CategoriesController {
         return categoryService.save(categoryRequestDto);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update category info by id",
             description = "Updates data about category in the db by id")
     @PutMapping("/{id}")

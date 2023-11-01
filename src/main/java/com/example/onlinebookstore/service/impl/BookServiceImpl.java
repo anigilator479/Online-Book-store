@@ -10,6 +10,7 @@ import com.example.onlinebookstore.model.Category;
 import com.example.onlinebookstore.repository.BookRepository;
 import com.example.onlinebookstore.repository.CategoryRepository;
 import com.example.onlinebookstore.service.BookService;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,12 +68,9 @@ public class BookServiceImpl implements BookService {
         bookRepository.deleteById(id);
     }
 
-    private void addBookCategoriesIfExists(List<Long> categoriesIds, Book book) {
-        if (categoriesIds != null) {
-            Set<Category> categorySet = new HashSet<>(
-                    categoryRepository.findAllById(categoriesIds)
-            );
-            book.setCategories(categorySet);
-        }
+    private void addBookCategoriesIfExists(@NotEmpty List<Long> categoriesIds, Book book) {
+        Set<Category> categorySet = new HashSet<>();
+        categoriesIds.forEach(c -> categorySet.add(categoryRepository.getReferenceById(c)));
+        book.setCategories(categorySet);
     }
 }

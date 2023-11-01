@@ -9,7 +9,6 @@ public record BookDtoWithoutCategoryIds(
         String isbn,
         BigDecimal price,
         String description,
-        String coverImage,
-        boolean isDeleted
+        String coverImage
 ) {
 }
