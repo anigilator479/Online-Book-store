@@ -70,7 +70,8 @@ public class BookServiceImpl implements BookService {
 
     private void addBookCategoriesIfExists(@NotEmpty List<Long> categoriesIds, Book book) {
         Set<Category> categorySet = new HashSet<>();
-        categoriesIds.forEach(c -> categorySet.add(categoryRepository.getReferenceById(c)));
+        categoriesIds.forEach(c -> categorySet.add(categoryRepository.findById(c).orElseThrow(
+                () -> new EntityNotFoundException("There is no category with this id " + c))));
         book.setCategories(categorySet);
     }
 }

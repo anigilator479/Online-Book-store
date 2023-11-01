@@ -44,7 +44,7 @@ public class CategoriesController {
 
     @Operation(summary = "Get a category by id", description = "Get a specific category by id")
     @GetMapping("/{id}")
-    public CategoryResponseDto getCategoryById(@PathVariable Long id) {
+    public CategoryResponseDto getCategoryById(@PathVariable @Positive Long id) {
         return categoryService.getById(id);
     }
 
