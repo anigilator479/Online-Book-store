@@ -32,21 +32,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
     private final BookService bookService;
 
-    @PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get all books", description = "Get a list of all books")
     @GetMapping
     public List<BookDto> getAll(@PageableDefault(size = 5, sort = "title") Pageable pageable) {
         return bookService.findAll(pageable);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get book by id", description = "Get a book by id")
     @GetMapping("/{id}")
     public BookDto getById(@PathVariable @Positive Long id) {
         return bookService.getById(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete book by id", description = "Deletes a book by id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
@@ -54,7 +52,7 @@ public class BookController {
         bookService.deleteById(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create book", description = "Creates a new book in db")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
@@ -62,7 +60,7 @@ public class BookController {
         return bookService.save(requestDto);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update book info by id",
             description = "Updates data about book in the db by id")
     @PutMapping("/{id}")

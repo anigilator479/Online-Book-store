@@ -16,5 +16,4 @@ public interface UserMapper {
     UserResponseDto toUserResponse(User user);
 
     User toUser(UserRegistrationRequestDto registrationRequestDto);
-
 }

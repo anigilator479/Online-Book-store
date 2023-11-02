@@ -1,5 +1,6 @@
 package com.example.onlinebookstore.security;
 
+import com.example.onlinebookstore.exceptions.TokenAuthenticationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -40,7 +41,7 @@ public class JwtUtil {
                     .parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            throw new JwtException("Expired or invalid JWT token");
+            throw new TokenAuthenticationException("Expired or invalid JWT token");
         }
     }
 
