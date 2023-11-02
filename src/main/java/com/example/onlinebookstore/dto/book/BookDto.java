@@ -14,5 +14,4 @@ public class BookDto {
     private String description;
     private String coverImage;
     private List<Long> categoriesIds;
-    private boolean isDeleted;
 }

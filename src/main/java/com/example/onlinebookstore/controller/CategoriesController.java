@@ -35,7 +35,6 @@ public class CategoriesController {
     private final BookService bookService;
     private final CategoryService categoryService;
 
-    @PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get all categories", description = "Get a list of all categories")
     @GetMapping
     public List<CategoryResponseDto> getAll(
@@ -43,14 +42,12 @@ public class CategoriesController {
         return categoryService.findAll(pageable);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get a category by id", description = "Get a specific category by id")
     @GetMapping("/{id}")
-    public CategoryResponseDto getCategoryById(@PathVariable Long id) {
+    public CategoryResponseDto getCategoryById(@PathVariable @Positive Long id) {
         return categoryService.getById(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get a books list by category id",
             description = "Get a specific books list by category id")
     @GetMapping("/{id}/books")
@@ -58,7 +55,7 @@ public class CategoriesController {
         return bookService.findAllByCategoriesId(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete category by id", description = "Deletes a category by id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
@@ -66,7 +63,7 @@ public class CategoriesController {
         categoryService.deleteById(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create category", description = "Creates a new category in db")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
@@ -75,7 +72,7 @@ public class CategoriesController {
         return categoryService.save(categoryRequestDto);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update category info by id",
             description = "Updates data about category in the db by id")
     @PutMapping("/{id}")
