@@ -52,13 +52,13 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findById(id)
                 .map(bookMapper::toDto)
                 .orElseThrow(() ->
-                        new EntityNotFoundException("Can't find book by this id: " + id));
+                        new EntityNotFoundException("Can't find book by this bookId: " + id));
     }
 
     @Override
     public BookDto updateById(CreateBookRequestDto createBookRequestDto, Long id) {
         Book book = bookRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Can't update book by this id: " + id));
+                new EntityNotFoundException("Can't update book by this bookId: " + id));
         bookMapper.updateBook(createBookRequestDto, book);
         return bookMapper.toDto(bookRepository.save(book));
     }
@@ -71,7 +71,7 @@ public class BookServiceImpl implements BookService {
     private void addBookCategoriesIfExists(@NotEmpty List<Long> categoriesIds, Book book) {
         Set<Category> categorySet = new HashSet<>();
         categoriesIds.forEach(c -> categorySet.add(categoryRepository.findById(c).orElseThrow(
-                () -> new EntityNotFoundException("There is no category with this id " + c))));
+                () -> new EntityNotFoundException("There is no category with this bookId " + c))));
         book.setCategories(categorySet);
     }
 }
