@@ -31,19 +31,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Transactional
     @Override
     public ShoppingCartResponseDto getShoppingCart() {
-        String email = getUserEmail();
-        User user = getUser(email);
-        return shoppingCartMapper.toResponseCart(findCart(user));
+        return shoppingCartMapper.toResponseCart(findCart());
     }
 
     @Transactional
     @Override
     public ShoppingCartResponseDto addCartItem(CartItemDto cartItemDto) {
-        String email = getUserEmail();
-        User user = getUser(email);
         Book book = bookRepository.findById(cartItemDto.bookId()).orElseThrow(
                 () -> new EntityNotFoundException("Non existent book id"));
-        ShoppingCart cart = findCart(user);
+        ShoppingCart cart = findCart();
         CartItem cartItem = new CartItem();
         cartItem.setBook(book);
         cartItem.setQuantity(cartItemDto.quantity());
@@ -61,9 +57,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Transactional
     @Override
     public ShoppingCartResponseDto updateCartItem(Long quantity, Long id) {
-        String email = getUserEmail();
-        User user = getUser(email);
-        ShoppingCart shoppingCartResponse = findCart(user);
+        ShoppingCart shoppingCartResponse = findCart();
         CartItem cartItem = cartItemRepository
                 .findByIdAndShoppingCartId(id, shoppingCartResponse.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Non existent cart item id"));
@@ -72,21 +66,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return shoppingCartMapper.toResponseCart(cartItem.getShoppingCart());
     }
 
-    private ShoppingCart findCart(User user) {
+    private ShoppingCart findCart() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Can't find user"));
         return shoppingCartRepository.findShoppingCartByUser(user).orElseGet(() -> {
             ShoppingCart shoppingCart = new ShoppingCart();
             shoppingCart.setCartItems(new HashSet<>());
             shoppingCart.setUser(user);
             return shoppingCartRepository.save(shoppingCart);
         });
-    }
-
-    private User getUser(String email) {
-        return userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Can't find user"));
-    }
-
-    private String getUserEmail() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }
