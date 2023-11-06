@@ -25,8 +25,3 @@ databaseChangeLog:
               - column:
                   name: quantity
                   type: BIGINT
-              - column:
-                  name: is_deleted
-                  type: BOOLEAN
-                  constraints:
-                    nullable: false
