@@ -45,7 +45,6 @@ public class ShoppingCartController {
     }
 
     @Operation(summary = "Add cart item", description = "Creates a cart item in shopping cart")
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public ShoppingCartResponseDto addCartItem(
             @RequestBody @Valid CartItemDto cartItemDto) {

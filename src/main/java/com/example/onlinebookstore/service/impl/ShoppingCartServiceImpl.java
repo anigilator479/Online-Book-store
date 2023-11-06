@@ -48,10 +48,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return shoppingCartMapper.toResponseCart(cart);
     }
 
-    @Transactional
     @Override
     public void deleteCartItem(Long id) {
-        cartItemRepository.deleteCartItemById(id);
+        cartItemRepository.deleteById(id);
     }
 
     @Transactional
@@ -69,7 +68,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Can't find user"));
-        return shoppingCartRepository.findShoppingCartByUser(user).orElseGet(() -> {
+        return shoppingCartRepository.findShoppingCartByUserEmail(email).orElseGet(() -> {
             ShoppingCart shoppingCart = new ShoppingCart();
             shoppingCart.setCartItems(new HashSet<>());
             shoppingCart.setUser(user);
