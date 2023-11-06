@@ -1,9 +1,10 @@
 package com.example.onlinebookstore.controller;
 
+import com.example.onlinebookstore.dto.order.OrderItemResponseDto;
+import com.example.onlinebookstore.dto.order.OrderResponseDto;
 import com.example.onlinebookstore.dto.shoppingcart.CartItemDto;
 import com.example.onlinebookstore.dto.shoppingcart.ItemQuantityDto;
 import com.example.onlinebookstore.dto.shoppingcart.ShoppingCartResponseDto;
-import com.example.onlinebookstore.service.ShoppingCartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -21,42 +22,47 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Tag(name = "Orders management", description = "Endpoints for managing orders")
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/api/orders")
 @RequiredArgsConstructor
 @Validated
 public class OrderController {
-    private final OrderService orderService;
 
-    @Operation(summary = "Get user's shopping cart content",
-            description = "Get all information about shopping cart content")
-    @GetMapping
-    public ShoppingCartResponseDto getCart() {
-        return shoppingCartService.getShoppingCart();
-    }
-
-    @Operation(summary = "Delete a cart item from a shopping cart",
-            description = "Deletes a cart item from a shopping cart by bookId")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/cart-items/{id}")
-    public void delete(@PathVariable @Positive Long id) {
-        shoppingCartService.deleteCartItem(id);
-    }
-
-    @Operation(summary = "Add cart item", description = "Creates a cart item in shopping cart")
-    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create order from user's shopping cart content",
+            description = "Creates an order using cart items in the shopping cart")
     @PostMapping
-    public ShoppingCartResponseDto addCartItem(
-            @RequestBody @Valid CartItemDto cartItemDto) {
-        return shoppingCartService.addCartItem(cartItemDto);
+    public OrderResponseDto makeOrder() {
+        return null;
     }
 
-    @Operation(summary = "Update cart item quantity",
-            description = "Updates cart item quantity by bookId")
+    @Operation(summary = "Get user's orders history",
+            description = "Responses user's orders history")
+    @GetMapping
+    public List<OrderResponseDto> getOrderHistory() {
+        return null;
+    }
+
+    @Operation(summary = "Get user's orders items list",
+            description = "Responses user's list of order items")
+    @GetMapping("/{orderId}/items")
+    public List<OrderItemResponseDto> getOrderItems(@PathVariable String orderId) {
+        return null;
+    }
+
+    @Operation(summary = "Get user's orders specific item by id",
+            description = "Responses user's specific item from orders items by id")
+    @GetMapping("/{orderId}/items/{id}")
+    public List<OrderItemResponseDto> getOrderItem(@PathVariable String orderId, @PathVariable String id) {
+        return null;
+    }
+
+    @Operation(summary = "Update order status",
+            description = "Updates order's status by id")
     @PutMapping("/{id}")
-    public ShoppingCartResponseDto updateCartItem(@RequestBody @Valid ItemQuantityDto quantityDto,
-                                                  @PathVariable @Positive Long id) {
-        return shoppingCartService.updateCartItem(quantityDto.quantity(), id);
+    public ShoppingCartResponseDto updateOrderStatus (@PathVariable @Positive Long id) {
+        return null;
     }
 }

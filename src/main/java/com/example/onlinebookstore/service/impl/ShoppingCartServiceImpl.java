@@ -62,7 +62,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 .findByIdAndShoppingCartId(id, shoppingCartResponse.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Non existent cart item id"));
         cartItem.setQuantity(quantity);
-        cartItemRepository.save(cartItem);
         return shoppingCartMapper.toResponseCart(cartItem.getShoppingCart());
     }
 
