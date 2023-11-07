@@ -13,6 +13,7 @@ import com.example.onlinebookstore.repository.CartItemRepository;
 import com.example.onlinebookstore.repository.ShoppingCartRepository;
 import com.example.onlinebookstore.repository.UserRepository;
 import com.example.onlinebookstore.service.ShoppingCartService;
+import java.util.HashSet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,13 +28,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final CartItemRepository cartItemRepository;
     private final BookRepository bookRepository;
 
-    @Transactional
     @Override
     public ShoppingCartResponseDto getShoppingCart() {
         return shoppingCartMapper.toResponseCart(findCart());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public ShoppingCartResponseDto addCartItem(CartItemDto cartItemDto) {
         Book book = bookRepository.findById(cartItemDto.bookId()).orElseThrow(
@@ -74,10 +74,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Can't find user"));
-        return shoppingCartRepository.findShoppingCartByUserEmail(email).orElseGet(() -> {
-            ShoppingCart shoppingCart = new ShoppingCart();
-            shoppingCart.setUser(user);
-            return shoppingCartRepository.save(shoppingCart);
-        });
+        return shoppingCartRepository.findShoppingCartByUserEmail(email)
+                .orElseGet(() -> creatCartForUser(user));
+    }
+
+    private ShoppingCart creatCartForUser(User user) {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setCartItems(new HashSet<>());
+        shoppingCart.setUser(user);
+        return shoppingCartRepository.save(shoppingCart);
     }
 }
