@@ -54,7 +54,7 @@ public class Order {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
     public enum Status {
-        USER,
-        ADMIN,
+        PENDING,
+        COMPLETED
     }
 }

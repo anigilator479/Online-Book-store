@@ -11,4 +11,6 @@ public interface ShoppingCartService {
     void deleteCartItem(Long id);
 
     ShoppingCartResponseDto updateCartItem(Long quantity, Long id);
+
+    void clearCart();
 }

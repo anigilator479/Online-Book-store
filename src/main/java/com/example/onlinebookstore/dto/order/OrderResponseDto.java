@@ -12,6 +12,6 @@ public record OrderResponseDto(
         Set<OrderItemResponseDto> cartItems,
         LocalDateTime orderDate,
         BigDecimal total,
-        Order.Status status
-) {
+        Order.Status status,
+        String shippingAddress) {
 }

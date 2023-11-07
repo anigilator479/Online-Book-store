@@ -13,11 +13,10 @@ import com.example.onlinebookstore.repository.CartItemRepository;
 import com.example.onlinebookstore.repository.ShoppingCartRepository;
 import com.example.onlinebookstore.repository.UserRepository;
 import com.example.onlinebookstore.service.ShoppingCartService;
-import jakarta.transaction.Transactional;
-import java.util.HashSet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -64,13 +63,19 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return shoppingCartMapper.toResponseCart(cartItem.getShoppingCart());
     }
 
+    @Transactional
+    @Override
+    public void clearCart() {
+        ShoppingCart shoppingCart = findCart();
+        cartItemRepository.deleteAll(shoppingCart.getCartItems());
+    }
+
     private ShoppingCart findCart() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Can't find user"));
         return shoppingCartRepository.findShoppingCartByUserEmail(email).orElseGet(() -> {
             ShoppingCart shoppingCart = new ShoppingCart();
-            shoppingCart.setCartItems(new HashSet<>());
             shoppingCart.setUser(user);
             return shoppingCartRepository.save(shoppingCart);
         });
