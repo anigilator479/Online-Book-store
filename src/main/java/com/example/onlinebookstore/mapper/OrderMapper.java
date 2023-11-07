@@ -1,7 +1,6 @@
 package com.example.onlinebookstore.mapper;
 
 import com.example.onlinebookstore.dto.order.OrderResponseDto;
-import com.example.onlinebookstore.dto.shoppingcart.ShoppingCartResponseDto;
 import com.example.onlinebookstore.model.Order;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;

@@ -7,6 +7,7 @@ import com.example.onlinebookstore.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @Tag(name = "Orders management", description = "Endpoints for managing orders")
 @RestController
 @RequestMapping("/api/orders")
@@ -26,6 +25,7 @@ import java.util.List;
 @Validated
 public class OrderController {
     private final OrderService orderService;
+
     @Operation(summary = "Create order from user's shopping cart content",
             description = "Creates an order using cart items in the shopping cart")
     @PostMapping
@@ -57,7 +57,7 @@ public class OrderController {
     @Operation(summary = "Update order status",
             description = "Updates order's status by id")
     @PutMapping("/{id}")
-    public OrderResponseDto updateOrderStatus (@PathVariable @Positive Long id) {
+    public OrderResponseDto updateOrderStatus(@PathVariable @Positive Long id) {
         return orderService.updateOrderStatus(id);
     }
 }

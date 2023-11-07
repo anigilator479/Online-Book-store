@@ -28,12 +28,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final CartItemRepository cartItemRepository;
     private final BookRepository bookRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public ShoppingCartResponseDto getShoppingCart() {
         return shoppingCartMapper.toResponseCart(findCart());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public ShoppingCartResponseDto addCartItem(CartItemDto cartItemDto) {
         Book book = bookRepository.findById(cartItemDto.bookId()).orElseThrow(

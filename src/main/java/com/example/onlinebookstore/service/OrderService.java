@@ -7,8 +7,12 @@ import java.util.List;
 
 public interface OrderService {
     OrderResponseDto makeOrder(OrderRequestDto orderRequestDto);
+
     List<OrderResponseDto> getOrderHistory();
+
     List<OrderItemResponseDto> getOrderItems(Long orderId);
+
     OrderItemResponseDto getOrderItem(Long orderId, Long id);
-    OrderResponseDto updateOrderStatus (Long id);
+
+    OrderResponseDto updateOrderStatus(Long id);
 }

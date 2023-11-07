@@ -11,14 +11,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -53,6 +52,7 @@ public class Order {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
+
     public enum Status {
         PENDING,
         COMPLETED

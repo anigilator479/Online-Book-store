@@ -3,6 +3,7 @@ package com.example.onlinebookstore.service.impl;
 import com.example.onlinebookstore.dto.order.OrderItemResponseDto;
 import com.example.onlinebookstore.dto.order.OrderRequestDto;
 import com.example.onlinebookstore.dto.order.OrderResponseDto;
+import com.example.onlinebookstore.dto.shoppingcart.CartItemResponseDto;
 import com.example.onlinebookstore.dto.shoppingcart.ShoppingCartResponseDto;
 import com.example.onlinebookstore.exceptions.EntityNotFoundException;
 import com.example.onlinebookstore.mapper.OrderItemMapper;
@@ -16,16 +17,15 @@ import com.example.onlinebookstore.repository.OrderRepository;
 import com.example.onlinebookstore.repository.UserRepository;
 import com.example.onlinebookstore.service.OrderService;
 import com.example.onlinebookstore.service.ShoppingCartService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         User user = getUser();
 
-        Set<OrderItem> orderItems = getOrderItems(shoppingCart, order);
+        Set<OrderItem> orderItems = createOrderItems(shoppingCart, order);
         BigDecimal total = calculateTotal(orderItems);
 
         order.setUser(user);
@@ -80,41 +80,47 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderItemResponseDto getOrderItem(Long orderId, Long id) {
-        return orderItemMapper.toResponseOrderItem(orderItemRepository.findByOrderIdAndId(orderId, id)
+        return orderItemMapper.toResponseOrderItem(orderItemRepository
+                .findByOrderIdAndId(orderId, id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Can't find order item by orderId: %d and itemId: %d", orderId, id))));
+                        String.format("Can't find order item by orderId: %d and itemId: %d",
+                                orderId, id))));
     }
 
     @Override
     public OrderResponseDto updateOrderStatus(Long id) {
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Can't find order by this id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find order by this id: " + id));
         order.setStatus(Order.Status.COMPLETED);
         return orderMapper.toResponseOrder(orderRepository.save(order));
     }
 
-    private User getUser() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findUserByEmail(email).orElseThrow(
-                () -> new EntityNotFoundException("Can't find user with this email: " + email));
+    private Set<OrderItem> createOrderItems(ShoppingCartResponseDto shoppingCart, Order order) {
+        return shoppingCart.cartItems().stream()
+                .map(cartItem -> mapToOrderItem(order, cartItem))
+                .collect(Collectors.toSet());
     }
 
-    private Set<OrderItem> getOrderItems(ShoppingCartResponseDto shoppingCart, Order order) {
-        return shoppingCart.cartItems().stream()
-                .map(item -> {
-                    OrderItem orderItem = new OrderItem();
-                    orderItem.setOrder(order);
-                    orderItem.setQuantity(item.quantity());
-                    orderItem.setBook(bookRepository.getReferenceById(item.bookId()));
-                    orderItem.setPrice(orderItem.getBook().getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())));
-                    return orderItem;
-                })
-                .collect(Collectors.toSet());
+    private OrderItem mapToOrderItem(Order order, CartItemResponseDto cartItem) {
+        OrderItem orderItem = new OrderItem();
+        orderItem.setOrder(order);
+        orderItem.setQuantity(cartItem.quantity());
+        orderItem.setBook(bookRepository.getReferenceById(cartItem.bookId()));
+        orderItem.setPrice(orderItem.getBook().getPrice()
+                .multiply(BigDecimal.valueOf(orderItem.getQuantity())));
+        return orderItem;
     }
 
     private static BigDecimal calculateTotal(Set<OrderItem> orderItems) {
         return orderItems.stream()
                 .map(OrderItem::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private User getUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findUserByEmail(email).orElseThrow(
+                () -> new EntityNotFoundException("Can't find user with this email: " + email));
     }
 }
