@@ -28,12 +28,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final CartItemRepository cartItemRepository;
     private final BookRepository bookRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public ShoppingCartResponseDto getShoppingCart() {
         return shoppingCartMapper.toResponseCart(findCart());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public ShoppingCartResponseDto addCartItem(CartItemDto cartItemDto) {
         Book book = bookRepository.findById(cartItemDto.bookId()).orElseThrow(
@@ -60,7 +61,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 .findByIdAndShoppingCartId(id, shoppingCartResponse.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Non existent cart item id"));
         cartItem.setQuantity(quantity);
-        cartItemRepository.save(cartItem);
         return shoppingCartMapper.toResponseCart(cartItem.getShoppingCart());
     }
 
