@@ -95,7 +95,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find order by this id: " + id));
         order.setStatus(Order.Status.valueOf(requestDto.status()));
-        return orderMapper.toResponseOrder(orderRepository.save(order));
+        return orderMapper.toResponseOrder(order);
     }
 
     private Order createOrder(Set<CartItem> cartItemSet) {
