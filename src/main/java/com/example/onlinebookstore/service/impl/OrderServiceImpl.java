@@ -70,6 +70,7 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<OrderItemResponseDto> getOrderItems(Long orderId) {
         Set<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId);
@@ -78,6 +79,7 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public OrderItemResponseDto getOrderItem(Long orderId, Long id) {
         return orderItemMapper.toResponseOrderItem(orderItemRepository
@@ -87,6 +89,7 @@ public class OrderServiceImpl implements OrderService {
                                 orderId, id))));
     }
 
+    @Transactional
     @Override
     public OrderResponseDto updateOrderStatus(Long id) {
         Order order = orderRepository.findById(id)
