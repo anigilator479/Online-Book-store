@@ -42,21 +42,22 @@ public class CategoriesController {
         return categoryService.findAll(pageable);
     }
 
-    @Operation(summary = "Get a category by id", description = "Get a specific category by id")
+    @Operation(summary = "Get a category by bookId",
+            description = "Get a specific category by bookId")
     @GetMapping("/{id}")
     public CategoryResponseDto getCategoryById(@PathVariable @Positive Long id) {
         return categoryService.getById(id);
     }
 
-    @Operation(summary = "Get a books list by category id",
-            description = "Get a specific books list by category id")
+    @Operation(summary = "Get a books list by category bookId",
+            description = "Get a specific books list by category bookId")
     @GetMapping("/{id}/books")
     public List<BookDtoWithoutCategoryIds> getBooksByCategoryId(@PathVariable @Positive Long id) {
         return bookService.findAllByCategoriesId(id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Delete category by id", description = "Deletes a category by id")
+    @Operation(summary = "Delete category by bookId", description = "Deletes a category by bookId")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive Long id) {
@@ -73,8 +74,8 @@ public class CategoriesController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Update category info by id",
-            description = "Updates data about category in the db by id")
+    @Operation(summary = "Update category info by bookId",
+            description = "Updates data about category in the db by bookId")
     @PutMapping("/{id}")
     public CategoryResponseDto updateBook(@RequestBody @Valid CategoryRequestDto requestDto,
                                               @PathVariable @Positive Long id) {

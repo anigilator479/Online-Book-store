@@ -38,14 +38,14 @@ public class BookController {
         return bookService.findAll(pageable);
     }
 
-    @Operation(summary = "Get book by id", description = "Get a book by id")
+    @Operation(summary = "Get book by bookId", description = "Get a book by bookId")
     @GetMapping("/{id}")
     public BookDto getById(@PathVariable @Positive Long id) {
         return bookService.getById(id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Delete book by id", description = "Deletes a book by id")
+    @Operation(summary = "Delete book by bookId", description = "Deletes a book by bookId")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive Long id) {
@@ -61,8 +61,8 @@ public class BookController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Update book info by id",
-            description = "Updates data about book in the db by id")
+    @Operation(summary = "Update book info by bookId",
+            description = "Updates data about book in the db by bookId")
     @PutMapping("/{id}")
     public BookDto updateBook(@RequestBody @Valid CreateBookRequestDto requestDto,
                               @PathVariable @Positive Long id) {
