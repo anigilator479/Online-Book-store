@@ -13,6 +13,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,6 +66,7 @@ public class OrderController {
         return orderService.getOrderItem(orderId, id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update order status",
             description = "Updates order's status by id")
     @PatchMapping("/{id}")
