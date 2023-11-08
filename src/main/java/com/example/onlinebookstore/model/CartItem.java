@@ -32,5 +32,6 @@ public class CartItem {
     private Book book;
 
     @Column(nullable = false)
-    private Long quantity;
+    private int quantity;
+
 }

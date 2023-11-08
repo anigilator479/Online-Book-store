@@ -3,27 +3,29 @@ package com.example.onlinebookstore.service.impl;
 import com.example.onlinebookstore.dto.order.OrderItemResponseDto;
 import com.example.onlinebookstore.dto.order.OrderRequestDto;
 import com.example.onlinebookstore.dto.order.OrderResponseDto;
-import com.example.onlinebookstore.dto.shoppingcart.CartItemResponseDto;
-import com.example.onlinebookstore.dto.shoppingcart.ShoppingCartResponseDto;
+import com.example.onlinebookstore.dto.order.OrderStatusRequestDto;
 import com.example.onlinebookstore.exceptions.EntityNotFoundException;
 import com.example.onlinebookstore.mapper.OrderItemMapper;
 import com.example.onlinebookstore.mapper.OrderMapper;
+import com.example.onlinebookstore.model.CartItem;
 import com.example.onlinebookstore.model.Order;
 import com.example.onlinebookstore.model.OrderItem;
+import com.example.onlinebookstore.model.ShoppingCart;
 import com.example.onlinebookstore.model.User;
-import com.example.onlinebookstore.repository.BookRepository;
+import com.example.onlinebookstore.repository.CartItemRepository;
 import com.example.onlinebookstore.repository.OrderItemRepository;
 import com.example.onlinebookstore.repository.OrderRepository;
+import com.example.onlinebookstore.repository.ShoppingCartRepository;
 import com.example.onlinebookstore.repository.UserRepository;
 import com.example.onlinebookstore.service.OrderService;
-import com.example.onlinebookstore.service.ShoppingCartService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,48 +34,44 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final OrderMapper orderMapper;
-    private final ShoppingCartService shoppingCartService;
-    private final BookRepository bookRepository;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
+    private final CartItemRepository cartItemRepository;
     private final OrderItemMapper orderItemMapper;
+    private final ShoppingCartRepository shoppingCartRepository;
 
     @Transactional
     @Override
-    public OrderResponseDto makeOrder(OrderRequestDto orderRequestDto) {
-        ShoppingCartResponseDto shoppingCart = shoppingCartService.getShoppingCart();
-        Order order = new Order();
-        User user = getUser();
-
-        Set<OrderItem> orderItems = createOrderItems(shoppingCart, order);
-        BigDecimal total = calculateTotal(orderItems);
+    public OrderResponseDto makeOrder(OrderRequestDto orderRequestDto, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Can't find user by id: " + userId));
+        ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Can't "));
+        Order order = createOrder(shoppingCart.getCartItems());
 
         order.setUser(user);
-        order.setOrderItems(orderItems);
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(Order.Status.PENDING);
-        order.setTotal(total);
         order.setShippingAddress(orderRequestDto.shippingAddress());
+        order.setTotal(calculateTotal(order.getOrderItems()));
 
         orderRepository.save(order);
-        orderItemRepository.saveAll(orderItems);
-        shoppingCartService.clearCart();
+        cartItemRepository.deleteAllByShoppingCartId(shoppingCart.getId());
         return orderMapper.toResponseOrder(order);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<OrderResponseDto> getOrderHistory() {
-        User user = getUser();
-        return orderRepository.findAllByUserId(user.getId()).stream()
+    public List<OrderResponseDto> getOrderHistory(Long id, Pageable pageable) {
+        return orderRepository.findAllByUserId(id, pageable).stream()
                 .map(orderMapper::toResponseOrder)
                 .toList();
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<OrderItemResponseDto> getOrderItems(Long orderId) {
-        Set<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId);
+    public List<OrderItemResponseDto> getOrderItems(Long orderId, Pageable pageable) {
+        Page<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId, pageable);
         return orderItems.stream()
                 .map(orderItemMapper::toResponseOrderItem)
                 .toList();
@@ -91,39 +89,35 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public OrderResponseDto updateOrderStatus(Long id) {
+    public OrderResponseDto updateOrderStatus(Long id, OrderStatusRequestDto requestDto) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find order by this id: " + id));
-        order.setStatus(Order.Status.COMPLETED);
+        order.setStatus(Order.Status.valueOf(requestDto.status()));
         return orderMapper.toResponseOrder(orderRepository.save(order));
     }
 
-    private Set<OrderItem> createOrderItems(ShoppingCartResponseDto shoppingCart, Order order) {
-        return shoppingCart.cartItems().stream()
-                .map(cartItem -> mapToOrderItem(order, cartItem))
-                .collect(Collectors.toSet());
-    }
-
-    private OrderItem mapToOrderItem(Order order, CartItemResponseDto cartItem) {
+    private Order createOrder(Set<CartItem> cartItemSet) {
+        Order order = new Order();
         OrderItem orderItem = new OrderItem();
-        orderItem.setOrder(order);
-        orderItem.setQuantity(cartItem.quantity());
-        orderItem.setBook(bookRepository.getReferenceById(cartItem.bookId()));
-        orderItem.setPrice(orderItem.getBook().getPrice()
-                .multiply(BigDecimal.valueOf(orderItem.getQuantity())));
-        return orderItem;
+        Set<OrderItem> orderItems = new HashSet<>();
+
+        cartItemSet.forEach(cartItem -> {
+                    orderItem.setQuantity(cartItem.getQuantity());
+                    orderItem.setBook(cartItem.getBook());
+                    orderItem.setPrice(cartItem.getBook().getPrice()
+                            .multiply(BigDecimal.valueOf(cartItem.getQuantity())));
+                    orderItem.setOrder(order);
+                    orderItems.add(orderItem);
+                }
+        );
+        order.setOrderItems(orderItems);
+        return order;
     }
 
     private static BigDecimal calculateTotal(Set<OrderItem> orderItems) {
         return orderItems.stream()
                 .map(OrderItem::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    private User getUser() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findUserByEmail(email).orElseThrow(
-                () -> new EntityNotFoundException("Can't find user with this email: " + email));
     }
 }
