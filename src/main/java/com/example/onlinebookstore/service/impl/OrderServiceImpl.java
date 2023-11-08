@@ -63,7 +63,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(readOnly = true)
     @Override
     public List<OrderResponseDto> getOrderHistory(Long id, Pageable pageable) {
-        return orderRepository.findAllByUserId(id, pageable).stream()
+        Page<Order> orders = orderRepository.findAllByUserId(id, pageable);
+        return orders.stream()
                 .map(orderMapper::toResponseOrder)
                 .toList();
     }
