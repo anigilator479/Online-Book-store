@@ -38,4 +38,9 @@ public class ShoppingCart {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
+
+    public void clearCartItems() {
+        cartItems.forEach(cartItem -> cartItem.setShoppingCart(null));
+        cartItems.clear();
+    }
 }

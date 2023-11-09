@@ -12,7 +12,6 @@ import com.example.onlinebookstore.model.Order;
 import com.example.onlinebookstore.model.OrderItem;
 import com.example.onlinebookstore.model.ShoppingCart;
 import com.example.onlinebookstore.model.User;
-import com.example.onlinebookstore.repository.CartItemRepository;
 import com.example.onlinebookstore.repository.OrderItemRepository;
 import com.example.onlinebookstore.repository.OrderRepository;
 import com.example.onlinebookstore.repository.ShoppingCartRepository;
@@ -36,7 +35,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
-    private final CartItemRepository cartItemRepository;
     private final OrderItemMapper orderItemMapper;
     private final ShoppingCartRepository shoppingCartRepository;
 
@@ -46,7 +44,8 @@ public class OrderServiceImpl implements OrderService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Can't find user by id: " + userId));
         ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartByUserId(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Can't "));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find shopping cart by this userId: " + userId));
         Order order = createOrder(shoppingCart.getCartItems());
 
         order.setUser(user);
@@ -55,8 +54,9 @@ public class OrderServiceImpl implements OrderService {
         order.setShippingAddress(orderRequestDto.shippingAddress());
         order.setTotal(calculateTotal(order.getOrderItems()));
 
+        shoppingCart.clearCartItems();
         orderRepository.save(order);
-        cartItemRepository.deleteAllByShoppingCartId(shoppingCart.getId());
+
         return orderMapper.toResponseOrder(order);
     }
 

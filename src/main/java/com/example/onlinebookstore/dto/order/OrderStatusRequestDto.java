@@ -1,9 +1,9 @@
 package com.example.onlinebookstore.dto.order;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 public record OrderStatusRequestDto(
-        @NotNull
+        @NotBlank
         String status
 ) {
 }
