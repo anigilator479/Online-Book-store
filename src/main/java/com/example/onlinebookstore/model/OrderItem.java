@@ -51,7 +51,6 @@ public class OrderItem {
 
     @Override
     public int hashCode() {
-        int primeNum = 59;
-        return price.intValue() * quantity * primeNum;
+        return Objects.hash(quantity, price);
     }
 }
