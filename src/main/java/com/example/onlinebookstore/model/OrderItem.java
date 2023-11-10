@@ -8,9 +8,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +27,7 @@ public class OrderItem {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     private Book book;
 
@@ -36,4 +36,22 @@ public class OrderItem {
 
     @Column(nullable = false)
     private BigDecimal price;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OrderItem orderItem = (OrderItem) o;
+        return quantity == orderItem.quantity && Objects.equals(price, orderItem.price);
+    }
+
+    @Override
+    public int hashCode() {
+        int primeNum = 59;
+        return price.intValue() * quantity * primeNum;
+    }
 }

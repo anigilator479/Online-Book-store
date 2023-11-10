@@ -100,18 +100,17 @@ public class OrderServiceImpl implements OrderService {
 
     private Order createOrder(Set<CartItem> cartItemSet) {
         Order order = new Order();
-        OrderItem orderItem = new OrderItem();
         Set<OrderItem> orderItems = new HashSet<>();
 
-        cartItemSet.forEach(cartItem -> {
-                    orderItem.setQuantity(cartItem.getQuantity());
-                    orderItem.setBook(cartItem.getBook());
-                    orderItem.setPrice(cartItem.getBook().getPrice()
-                            .multiply(BigDecimal.valueOf(cartItem.getQuantity())));
-                    orderItem.setOrder(order);
-                    orderItems.add(orderItem);
-                }
-        );
+        for (CartItem cartItem : cartItemSet) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setBook(cartItem.getBook());
+            orderItem.setPrice(cartItem.getBook().getPrice()
+                    .multiply(BigDecimal.valueOf(cartItem.getQuantity())));
+            orderItem.setOrder(order);
+            orderItems.add(orderItem);
+        }
         order.setOrderItems(orderItems);
         return order;
     }

@@ -39,11 +39,19 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         Book book = bookRepository.findById(cartItemDto.bookId()).orElseThrow(
                 () -> new EntityNotFoundException("Non existent book id: " + cartItemDto.bookId()));
         ShoppingCart cart = findCart(userId);
-        CartItem cartItem = new CartItem();
-        cartItem.setBook(book);
-        cartItem.setQuantity(cartItemDto.quantity());
-        cartItem.setShoppingCart(cart);
-        cartItemRepository.save(cartItem);
+        CartItem cartItem;
+        if (cartItemRepository.existsByBookIdAndShoppingCartId(book.getId(), cart.getId())) {
+            cartItem = cartItemRepository.findByBookIdAndShoppingCartId(book.getId(), cart.getId())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "Can't find books with this id: " + book.getId()));
+            cartItem.setQuantity(cartItem.getQuantity() + cartItemDto.quantity());
+        } else {
+            cartItem = new CartItem();
+            cartItem.setBook(book);
+            cartItem.setQuantity(cartItemDto.quantity());
+            cartItem.setShoppingCart(cart);
+            cartItemRepository.save(cartItem);
+        }
         return shoppingCartMapper.toResponseCart(cart);
     }
 
