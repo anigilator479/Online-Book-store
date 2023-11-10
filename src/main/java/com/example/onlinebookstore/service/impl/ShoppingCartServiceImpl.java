@@ -39,20 +39,36 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         Book book = bookRepository.findById(cartItemDto.bookId()).orElseThrow(
                 () -> new EntityNotFoundException("Non existent book id: " + cartItemDto.bookId()));
         ShoppingCart cart = findCart(userId);
-        CartItem cartItem;
-        if (cartItemRepository.existsByBookIdAndShoppingCartId(book.getId(), cart.getId())) {
-            cartItem = cartItemRepository.findByBookIdAndShoppingCartId(book.getId(), cart.getId())
-                    .orElseThrow(() -> new EntityNotFoundException(
-                            "Can't find books with this id: " + book.getId()));
-            cartItem.setQuantity(cartItem.getQuantity() + cartItemDto.quantity());
+        Boolean cartItemExists = cartItemRepository
+                .existsByBookIdAndShoppingCartId(book.getId(), cart.getId());
+
+        if (cartItemExists) {
+            updateExistedCartItem(cartItemDto, book, cart);
         } else {
-            cartItem = new CartItem();
-            cartItem.setBook(book);
-            cartItem.setQuantity(cartItemDto.quantity());
-            cartItem.setShoppingCart(cart);
-            cartItemRepository.save(cartItem);
+            createCartItem(cartItemDto, book, cart);
         }
+
         return shoppingCartMapper.toResponseCart(cart);
+    }
+
+    private void createCartItem(CartItemDto cartItemDto,
+                                Book book,
+                                ShoppingCart cart) {
+        CartItem cartItem = new CartItem();
+        cartItem.setBook(book);
+        cartItem.setQuantity(cartItemDto.quantity());
+        cartItem.setShoppingCart(cart);
+        cartItemRepository.save(cartItem);
+    }
+
+    private void updateExistedCartItem(CartItemDto cartItemDto,
+                                       Book book,
+                                       ShoppingCart cart) {
+        CartItem cartItem = cartItemRepository
+                .findByBookIdAndShoppingCartId(book.getId(), cart.getId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find books with this id: " + book.getId()));
+        cartItem.setQuantity(cartItem.getQuantity() + cartItemDto.quantity());
     }
 
     @Override
@@ -62,7 +78,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Transactional
     @Override
-    public ShoppingCartResponseDto updateCartItem(int quantity, Long id, Long userId) {
+    public ShoppingCartResponseDto updateCartItem(int quantity,
+                                                  Long id,
+                                                  Long userId) {
         ShoppingCart shoppingCartResponse = findCart(userId);
         CartItem cartItem = cartItemRepository
                 .findByIdAndShoppingCartId(id, shoppingCartResponse.getId())
