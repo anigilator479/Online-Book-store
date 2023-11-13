@@ -55,9 +55,8 @@ public class OrderServiceImpl implements OrderService {
         order.setTotal(calculateTotal(order.getOrderItems()));
 
         shoppingCart.clearCartItems();
-        orderRepository.save(order);
 
-        return orderMapper.toResponseOrder(order);
+        return orderMapper.toResponseOrder(orderRepository.save(order));
     }
 
     @Transactional(readOnly = true)
@@ -102,20 +101,15 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         Set<OrderItem> orderItems = new HashSet<>();
 
-        for (CartItem cartItem : cartItemSet) {
-            OrderItem orderItem = new OrderItem();
-            orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setBook(cartItem.getBook());
-            orderItem.setPrice(cartItem.getBook().getPrice()
-                    .multiply(BigDecimal.valueOf(cartItem.getQuantity())));
-            orderItem.setOrder(order);
-            orderItems.add(orderItem);
-        }
+        cartItemSet.stream()
+                .map(orderItemMapper::toOrderItem)
+                .forEach(orderItems::add);
+
         order.setOrderItems(orderItems);
         return order;
     }
 
-    private static BigDecimal calculateTotal(Set<OrderItem> orderItems) {
+    private BigDecimal calculateTotal(Set<OrderItem> orderItems) {
         return orderItems.stream()
                 .map(OrderItem::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
