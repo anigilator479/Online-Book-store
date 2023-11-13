@@ -11,5 +11,5 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
     Optional<CartItem> findByBookIdAndShoppingCartId(Long id, Long shoppingCartId);
 
-    Boolean existsByBookIdAndShoppingCartId(Long bookId, Long shoppingCartId);
+    boolean existsByBookIdAndShoppingCartId(Long bookId, Long shoppingCartId);
 }

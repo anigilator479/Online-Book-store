@@ -39,7 +39,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         Book book = bookRepository.findById(cartItemDto.bookId()).orElseThrow(
                 () -> new EntityNotFoundException("Non existent book id: " + cartItemDto.bookId()));
         ShoppingCart cart = findCart(userId);
-        Boolean cartItemExists = cartItemRepository
+        boolean cartItemExists = cartItemRepository
                 .existsByBookIdAndShoppingCartId(book.getId(), cart.getId());
 
         if (cartItemExists) {

@@ -54,15 +54,15 @@ public class OrderController {
             description = "Responses user's list of order items")
     @GetMapping("/{orderId}/items")
     public List<OrderItemResponseDto> getOrderItems(@PageableDefault(size = 5,
-            sort = "bookId") Pageable pageable, @PathVariable Long orderId) {
+            sort = "bookId") Pageable pageable, @Positive @PathVariable Long orderId) {
         return orderService.getOrderItems(orderId, pageable);
     }
 
     @Operation(summary = "Get user's orders specific item by id",
             description = "Responses user's specific item from orders items by id")
     @GetMapping("/{orderId}/items/{id}")
-    public OrderItemResponseDto getOrderItem(@PathVariable Long orderId,
-                                             @PathVariable Long id) {
+    public OrderItemResponseDto getOrderItem(@PathVariable @Positive Long orderId,
+                                             @PathVariable @Positive Long id) {
         return orderService.getOrderItem(orderId, id);
     }
 

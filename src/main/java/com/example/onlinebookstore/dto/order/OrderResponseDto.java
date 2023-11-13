@@ -8,7 +8,7 @@ import java.util.Set;
 public record OrderResponseDto(
         Long id,
         Long userId,
-        Set<OrderItemResponseDto> cartItems,
+        Set<OrderItemResponseDto> orderItems,
         LocalDateTime orderDate,
         BigDecimal total,
         Order.Status status,
