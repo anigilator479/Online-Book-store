@@ -15,6 +15,5 @@ import org.mapstruct.NullValueCheckStrategy;
         uses = OrderItemMapper.class)
 public interface OrderMapper {
     @Mapping(source = "user.id", target = "userId")
-    @Mapping(source = "orderItems", target = "cartItems")
     OrderResponseDto toResponseOrder(Order order);
 }

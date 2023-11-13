@@ -103,7 +103,10 @@ public class OrderServiceImpl implements OrderService {
 
         cartItemSet.stream()
                 .map(orderItemMapper::toOrderItem)
-                .forEach(orderItems::add);
+                .forEach(orderItem -> {
+                    orderItem.setOrder(order);
+                    orderItems.add(orderItem);
+                });
 
         order.setOrderItems(orderItems);
         return order;

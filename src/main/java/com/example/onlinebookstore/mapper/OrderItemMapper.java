@@ -15,6 +15,7 @@ import org.mapstruct.NullValueCheckStrategy;
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
         implementationPackage = "<PACKAGE_NAME>.impl")
 public interface OrderItemMapper {
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "price", expression = "java(calculatePrice(cartItem))")
     OrderItem toOrderItem(CartItem cartItem);
 
