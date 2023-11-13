@@ -55,9 +55,8 @@ public class OrderServiceImpl implements OrderService {
         order.setTotal(calculateTotal(order.getOrderItems()));
 
         shoppingCart.clearCartItems();
-        orderRepository.save(order);
 
-        return orderMapper.toResponseOrder(order);
+        return orderMapper.toResponseOrder(orderRepository.save(order));
     }
 
     @Transactional(readOnly = true)
