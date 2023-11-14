@@ -8,6 +8,7 @@ import com.example.onlinebookstore.model.User;
 import com.example.onlinebookstore.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class OrderController {
     @Operation(summary = "Create order from user's shopping cart content",
             description = "Creates an order using cart items in the shopping cart")
     @PostMapping
-    public OrderResponseDto makeOrder(@RequestBody OrderRequestDto orderRequestDto,
+    public OrderResponseDto makeOrder(@RequestBody @Valid OrderRequestDto orderRequestDto,
                                       Authentication authentication) {
         User principal = (User) authentication.getPrincipal();
         return orderService.makeOrder(orderRequestDto, principal.getId());
@@ -70,7 +71,7 @@ public class OrderController {
     @Operation(summary = "Update order status",
             description = "Updates order's status by id")
     @PatchMapping("/{id}")
-    public OrderResponseDto updateOrderStatus(@RequestBody OrderStatusRequestDto requestDto,
+    public OrderResponseDto updateOrderStatus(@RequestBody @Valid OrderStatusRequestDto requestDto,
                                               @PathVariable @Positive Long id) {
         return orderService.updateOrderStatus(id, requestDto);
     }
