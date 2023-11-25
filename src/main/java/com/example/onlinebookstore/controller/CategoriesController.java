@@ -42,22 +42,22 @@ public class CategoriesController {
         return categoryService.findAll(pageable);
     }
 
-    @Operation(summary = "Get a category by bookId",
-            description = "Get a specific category by bookId")
+    @Operation(summary = "Get a category by Id",
+            description = "Get a specific category by Id")
     @GetMapping("/{id}")
     public CategoryResponseDto getCategoryById(@PathVariable @Positive Long id) {
         return categoryService.getById(id);
     }
 
-    @Operation(summary = "Get a books list by category bookId",
-            description = "Get a specific books list by category bookId")
+    @Operation(summary = "Get a books list by category Id",
+            description = "Get a specific books list by category Id")
     @GetMapping("/{id}/books")
     public List<BookDtoWithoutCategoryIds> getBooksByCategoryId(@PathVariable @Positive Long id) {
         return bookService.findAllByCategoriesId(id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Delete category by bookId", description = "Deletes a category by bookId")
+    @Operation(summary = "Delete category by Id", description = "Deletes a category by Id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive Long id) {
@@ -74,10 +74,10 @@ public class CategoriesController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Update category info by bookId",
-            description = "Updates data about category in the db by bookId")
+    @Operation(summary = "Update category info by Id",
+            description = "Updates data about category in the db by Id")
     @PutMapping("/{id}")
-    public CategoryResponseDto updateBook(@RequestBody @Valid CategoryRequestDto requestDto,
+    public CategoryResponseDto updateCategory(@RequestBody @Valid CategoryRequestDto requestDto,
                                               @PathVariable @Positive Long id) {
         return categoryService.updateById(id, requestDto);
     }

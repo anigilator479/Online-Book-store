@@ -5,6 +5,7 @@ import com.example.onlinebookstore.dto.book.BookDtoWithoutCategoryIds;
 import com.example.onlinebookstore.dto.book.CreateBookRequestDto;
 import com.example.onlinebookstore.model.Book;
 import com.example.onlinebookstore.model.Category;
+import java.util.stream.Collectors;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
@@ -30,7 +31,7 @@ public interface BookMapper {
         bookDto.setCategoriesIds(book.getCategories()
                 .stream()
                 .map(Category::getId)
-                .toList());
+                .collect(Collectors.toSet()));
     }
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
