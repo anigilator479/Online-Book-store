@@ -40,7 +40,7 @@ public class ShoppingCartController {
     }
 
     @Operation(summary = "Delete a cart item from a shopping cart",
-            description = "Deletes a cart item from a shopping cart by bookId")
+            description = "Deletes a cart item from a shopping cart by Id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/cart-items/{id}")
     public void delete(@PathVariable @Positive Long id) {
@@ -56,7 +56,7 @@ public class ShoppingCartController {
     }
 
     @Operation(summary = "Update cart item quantity",
-            description = "Updates cart item quantity by bookId")
+            description = "Updates cart item quantity by Id")
     @PutMapping("/{id}")
     public ShoppingCartResponseDto updateCartItem(@RequestBody @Valid ItemQuantityDto quantityDto,
                                           @PathVariable @Positive Long id,
