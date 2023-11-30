@@ -1,7 +1,5 @@
 package com.example.onlinebookstore.service;
 
-import static org.mockito.Mockito.times;
-
 import com.example.onlinebookstore.dto.category.CategoryRequestDto;
 import com.example.onlinebookstore.dto.category.CategoryResponseDto;
 import com.example.onlinebookstore.exceptions.EntityNotFoundException;
@@ -98,7 +96,7 @@ public class CategoryServiceTest {
 
         categoryService.deleteById(id);
 
-        Mockito.verify(categoryRepository, times(1)).deleteById(id);
+        Mockito.verify(categoryRepository).deleteById(id);
         Mockito.verifyNoMoreInteractions(categoryRepository);
     }
 

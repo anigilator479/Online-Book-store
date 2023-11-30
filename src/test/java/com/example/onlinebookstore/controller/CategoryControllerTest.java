@@ -1,5 +1,6 @@
 package com.example.onlinebookstore.controller;
 
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -166,9 +167,7 @@ public class CategoryControllerTest {
                 objectMapper.readerForListOf(CategoryResponseDto.class)
                         .readValue(resultAsString);
 
-        for (int i = 0; i < expected.size(); i++) {
-            Assertions.assertTrue(EqualsBuilder.reflectionEquals(expected.get(i), actual.get(i)));
-        }
+        assertIterableEquals(expected, actual);
     }
 
     @SneakyThrows

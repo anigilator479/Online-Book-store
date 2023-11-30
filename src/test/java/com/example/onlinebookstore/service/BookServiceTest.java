@@ -1,7 +1,5 @@
 package com.example.onlinebookstore.service;
 
-import static org.mockito.Mockito.times;
-
 import com.example.onlinebookstore.dto.book.BookDto;
 import com.example.onlinebookstore.dto.book.CreateBookRequestDto;
 import com.example.onlinebookstore.exceptions.EntityNotFoundException;
@@ -162,7 +160,7 @@ public class BookServiceTest {
 
         bookService.deleteById(id);
 
-        Mockito.verify(bookRepository, times(1)).deleteById(id);
+        Mockito.verify(bookRepository).deleteById(id);
         Mockito.verifyNoMoreInteractions(bookRepository);
     }
 
