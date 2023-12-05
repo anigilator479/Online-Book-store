@@ -103,8 +103,7 @@ public class CategoryControllerTest {
                 "Aboba 10 IQ"
         );
 
-        MvcResult result = mockMvc.perform(get("/api/categories/" + categoryId)
-                        .contentType(MediaType.APPLICATION_JSON))
+        MvcResult result = mockMvc.perform(get("/api/categories/" + categoryId))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -125,8 +124,7 @@ public class CategoryControllerTest {
         long categoryId = 1L;
 
         mockMvc.perform(delete("/api/categories/" + categoryId))
-                .andExpect(status().isNoContent())
-                .andReturn();
+                .andExpect(status().isNoContent());
     }
 
     @SneakyThrows
@@ -253,8 +251,7 @@ public class CategoryControllerTest {
         List<BookDtoWithoutCategoryIds> expected = List.of(book1, book2, book3);
 
         MvcResult result = mockMvc.perform(get(String.format("/api/categories/%d/books",
-                        categoryId))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        categoryId)))
                 .andExpect(status().isOk())
                 .andReturn();
 

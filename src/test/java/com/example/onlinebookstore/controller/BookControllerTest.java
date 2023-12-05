@@ -118,8 +118,7 @@ public class BookControllerTest {
         expected.setCoverImage("img_src");
         expected.setCategoriesIds(Set.of(1L));
 
-        MvcResult result = mockMvc.perform(get("/api/books/" + bookId)
-                        .contentType(MediaType.APPLICATION_JSON))
+        MvcResult result = mockMvc.perform(get("/api/books/" + bookId))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -140,8 +139,7 @@ public class BookControllerTest {
         long bookId = 1L;
 
         mockMvc.perform(delete("/api/books/" + bookId))
-                .andExpect(status().isNoContent())
-                .andReturn();
+                .andExpect(status().isNoContent());
     }
 
     @SneakyThrows
@@ -182,8 +180,7 @@ public class BookControllerTest {
 
         List<BookDto> expected = List.of(book1, book2, book3);
 
-        MvcResult result = mockMvc.perform(get("/api/books")
-                        .contentType(MediaType.APPLICATION_JSON))
+        MvcResult result = mockMvc.perform(get("/api/books"))
                 .andExpect(status().isOk())
                 .andReturn();
 
