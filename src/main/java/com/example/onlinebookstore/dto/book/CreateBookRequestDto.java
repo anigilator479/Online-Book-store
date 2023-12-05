@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 import org.hibernate.validator.constraints.Length;
 
 public record CreateBookRequestDto(
@@ -26,6 +26,6 @@ public record CreateBookRequestDto(
         @Length(min = 4, max = 255)
         String coverImage,
         @NotEmpty
-        List<@Positive Long> categoriesIds
+        Set<@Positive Long> categoriesIds
 ) {
 }

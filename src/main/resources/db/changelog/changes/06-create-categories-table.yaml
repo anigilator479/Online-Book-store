@@ -24,3 +24,4 @@ databaseChangeLog:
               - column:
                   name: is_deleted
                   type: BOOLEAN
+                  defaultValueBoolean: false
