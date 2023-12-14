@@ -3,7 +3,6 @@ package com.example.onlinebookstore.controller;
 import com.example.onlinebookstore.dto.shoppingcart.CartItemDto;
 import com.example.onlinebookstore.dto.shoppingcart.ItemQuantityDto;
 import com.example.onlinebookstore.dto.shoppingcart.ShoppingCartResponseDto;
-import com.example.onlinebookstore.model.User;
 import com.example.onlinebookstore.service.ShoppingCartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,8 +34,7 @@ public class ShoppingCartController {
             description = "Get all information about shopping cart content")
     @GetMapping
     public ShoppingCartResponseDto getCart(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        return shoppingCartService.getShoppingCart(user.getId());
+        return shoppingCartService.getShoppingCart(authentication.getName());
     }
 
     @Operation(summary = "Delete a cart item from a shopping cart",
@@ -51,8 +49,7 @@ public class ShoppingCartController {
     @PostMapping
     public ShoppingCartResponseDto addCartItem(
             @RequestBody @Valid CartItemDto cartItemDto, Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        return shoppingCartService.addCartItem(cartItemDto, user.getId());
+        return shoppingCartService.addCartItem(cartItemDto, authentication.getName());
     }
 
     @Operation(summary = "Update cart item quantity",
@@ -61,7 +58,7 @@ public class ShoppingCartController {
     public ShoppingCartResponseDto updateCartItem(@RequestBody @Valid ItemQuantityDto quantityDto,
                                           @PathVariable @Positive Long id,
                                                   Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        return shoppingCartService.updateCartItem(quantityDto.quantity(), id, user.getId());
+        return shoppingCartService.updateCartItem(quantityDto.quantity(), id,
+                authentication.getName());
     }
 }
