@@ -80,8 +80,6 @@ public class ShoppingCartControllerTest {
 
         assertNotNull(actual);
         assertNotNull(actual.id());
-        System.out.println(expected);
-        System.out.println(actual);
         Assertions.assertTrue(EqualsBuilder.reflectionEquals(expected, actual, "id"));
     }
 
