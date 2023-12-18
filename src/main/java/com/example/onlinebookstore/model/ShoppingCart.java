@@ -43,4 +43,9 @@ public class ShoppingCart {
         cartItems.forEach(cartItem -> cartItem.setShoppingCart(null));
         cartItems.clear();
     }
+
+    public void addCartItemToCart(CartItem cartItem) {
+        cartItem.setShoppingCart(this);
+        cartItems.add(cartItem);
+    }
 }
